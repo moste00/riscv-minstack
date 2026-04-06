@@ -1,12 +1,12 @@
 #!/bin/sh
 set -eux
 # REQUIRES: .versions and .env to be sourced first
-: "${VERSIONS_WERE_SET:?source .versions before running build-opensbi.sh}"
-: "${ENV_WAS_SET:?source .env before running build-opensbi.sh}"
+: "${MSTK_VERSIONS_WERE_SET:?source .versions before running build-opensbi.sh}"
+: "${MSTK_ENV_WAS_SET:?source .env before running build-opensbi.sh}"
 
-git clone --depth 1 --branch "$OPENSBI_VERSION" https://github.com/riscv-software-src/opensbi
+git clone --depth 1 --branch "${MSTK_OPENSBI_VERSION}" https://github.com/riscv-software-src/opensbi
 cd opensbi
-make CROSS_COMPILE="${TOOLCHAIN_PREFIX}" \
+make CROSS_COMPILE="${MSTK_TOOLCHAIN_PREFIX}" \
      PLATFORM=generic \
      PLATFORM_RISCV_XLEN=32 \
      -j$(nproc)

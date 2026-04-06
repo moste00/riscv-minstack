@@ -1,14 +1,14 @@
 #!/bin/sh
 set -eux
 # REQUIRES: .versions and .env to be sourced first
-: "${VERSIONS_WERE_SET:?source .versions before running build-linux.sh}"
-: "${ENV_WAS_SET:?source .env before running build-linux.sh}"
+: "${MSTK_VERSIONS_WERE_SET:?source .versions before running build-linux.sh}"
+: "${MSTK_ENV_WAS_SET:?source .env before running build-linux.sh}"
 
 ########################### Obtain a 32-bit linux kernel ####################################################
 # By building it from the sources as minimally as possible, since there is no easy way to get a prebuilt one.
 #############################################################################################################
 
-LINUX_TARBALL="linux-${LINUX_VERSION}.tar.xz"
+LINUX_TARBALL="linux-${MSTK_LINUX_VERSION}.tar.xz"
 LINUX_CDN="https://cdn.kernel.org/pub/linux/kernel/v6.x"
 BUILD_DIR="arch/riscv/boot"
 
@@ -24,7 +24,7 @@ sh ../riscv-minstack/scripts/rv32/configure-linux.sh
 
 # --- b.ii Then actually build the kernel
 make ARCH=riscv \
-     CROSS_COMPILE="${TOOLCHAIN_PREFIX}" \
+     CROSS_COMPILE="${MSTK_TOOLCHAIN_PREFIX}" \
      Image.gz compile_commands.json \
      -j$(nproc)
 
