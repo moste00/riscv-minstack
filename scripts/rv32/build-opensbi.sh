@@ -14,5 +14,5 @@ make CROSS_COMPILE="${MSTK_TOOLCHAIN_PREFIX}" \
 export OPENSBI_ARTIFACT_ROOT=$(pwd)/build/platform/generic/firmware
 echo "OPENSBI_ARTIFACT_ROOT=${OPENSBI_ARTIFACT_ROOT}" >> ${GITHUB_ENV:-/dev/null}
 cd "${OPENSBI_ARTIFACT_ROOT}" && for f in fw*.bin fw*.elf fw*.o; do
-  cp "$f" "rv32_$f"
+  cp "$f" "rv32-$f"
 done
