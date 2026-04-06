@@ -1,0 +1,102 @@
+on:
+  workflow_dispatch:
+
+# A Map-Reduce of some sort
+jobs:
+  # 1- Map, i.e. build everything in parallel
+  build-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load environment
+        run: |
+          echo "GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
+          source .versions
+          source .env 
+          echo "BOOTLIN_DOWNLOAD_URL=${BOOTLIN_DOWNLOAD_URL}" >> $GITHUB_ENV
+          echo "BOOTLIN_RV32_TOOLCHAIN=${BOOTLIN_RV32_TOOLCHAIN}" >> $GITHUB_ENV
+          
+      - name: Install Linux build depedencies 
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y make flex bison bc libelf-dev libssl-dev
+
+      - uses: .github/actions/bootlin
+        with: 
+          bootlin-url: ${{ env.BOOTLIN_DOWNLOAD_URL }}
+          bootlin-tarball-name: ${{ env.BOOTLIN_RV32_TOOLCHAIN }}
+          cache-path: ${{ github.workspace }}/toolchain 
+          
+      - name: Build Linux
+        run: cd .. && sh riscv-minstack/scripts/rv32/build-linux.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: ${{ env.LINUX_ARTIFACT_ROOT }}/Image*
+
+  build-opensbi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load environment
+        run: |
+          echo "GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
+          source .versions
+          source .env 
+          echo "BOOTLIN_DOWNLOAD_URL=${BOOTLIN_DOWNLOAD_URL}" >> $GITHUB_ENV
+          echo "BOOTLIN_RV32_TOOLCHAIN=${BOOTLIN_RV32_TOOLCHAIN}" >> $GITHUB_ENV
+      - uses: .github/actions/bootlin
+        with: 
+          bootlin-url: ${{ env.BOOTLIN_DOWNLOAD_URL }}
+          bootlin-tarball-name: ${{ env.BOOTLIN_RV32_TOOLCHAIN }}
+          cache-path: ${{ github.workspace }}/toolchain 
+      - name: Build opensbi
+        run: cd .. && sh  riscv-minstack/scripts/rv32/build-opensbi.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: opensbi
+          path: ${{ env.OPENSBI_ARTIFACT_ROOT }}/fw*
+
+  build-busybox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load environment
+        run: |
+          echo "GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
+          source .versions
+          source .env 
+          echo "BOOTLIN_DOWNLOAD_URL=${BOOTLIN_DOWNLOAD_URL}" >> $GITHUB_ENV
+          echo "BOOTLIN_RV32_TOOLCHAIN=${BOOTLIN_RV32_TOOLCHAIN}" >> $GITHUB_ENV
+      - uses: .github/actions/bootlin
+        with: 
+          bootlin-url: ${{ env.BOOTLIN_DOWNLOAD_URL }}
+          bootlin-tarball-name: ${{ env.BOOTLIN_RV32_TOOLCHAIN }}
+          cache-path: ${{ github.workspace }}/toolchain 
+      - name: Build busybox
+        run: cd .. && sh  riscv-minstack/scripts/rv32/build-busybox.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: busybox
+          path: ${{ env.BUSYBOX_ARTIFACT_ROOT }}/busybox
+
+  # 2- Reduce, i.e. publish the final artifacts to Releases after everything is done
+  publish-artifacts:
+    runs-on: ubuntu-latest
+    needs: [build-linux, build-opensbi, build-busybox]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.sha }}
+          files: artifacts/**/*

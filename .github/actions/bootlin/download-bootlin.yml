@@ -1,0 +1,28 @@
+name: Download or restore Bootlin from cache 
+
+inputs:
+  bootlin-url:
+    required: true
+  bootlin-tarball-name:
+    required: true 
+  cache-path:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Try getting the Bootlin toolchain from cache
+      id: cache-toolchain
+      uses: actions/cache@v4
+      with:
+        path: ${{ inputs.cache-path}}
+        key: ${{ inputs.bootlin-tarball-name }}
+
+    - name: Download Bootlin on cache miss
+      if: steps.cache-toolchain.outputs.cache-hit != 'true'
+      shell: sh
+      run: |
+        mkdir -p toolchain && cd toolchain
+        wget -q ${{ inputs.bootlin-url }} 
+        tar -xf ${{ inputs.bootlin-tarball-name }}
+        rm ${{ inputs.bootlin-tarball-name }}
