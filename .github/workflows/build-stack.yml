@@ -12,6 +12,7 @@ jobs:
       - name: Load environment
         run: |
           set -a
+          export MSTK_GH_ROOT=${{ github.workspace }}
           echo "MSTK_GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
           source .versions && source .env 
           env
@@ -44,6 +45,7 @@ jobs:
       - name: Load environment
         run: |
           set -a
+          export MSTK_GH_ROOT=${{ github.workspace }}
           echo "MSTK_GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
           source .versions && source .env
           env
@@ -70,6 +72,7 @@ jobs:
       - name: Load environment
         run: |
           set -a
+          export MSTK_GH_ROOT=${{ github.workspace }}
           echo "MSTK_GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
           source .versions && source .env
           env
