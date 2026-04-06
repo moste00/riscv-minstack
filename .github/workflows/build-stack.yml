@@ -102,5 +102,5 @@ jobs:
           path: artifacts/
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.sha }}
+          tag_name: v${{ github.run_number }}
           files: artifacts/**/*
