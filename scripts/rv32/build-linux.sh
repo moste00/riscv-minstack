@@ -31,6 +31,9 @@ make ARCH=riscv \
 # --- b.iii Verify build output
 file ${BUILD_DIR}/Image* && ls -lh ${BUILD_DIR}/ && readelf -h vmlinux | grep -E "Class|Machine"
 echo "LINUX_ARTIFACT_ROOT=$(pwd)/${BUILD_DIR}" >> ${GITHUB_ENV:-/dev/null}
+cd "${LINUX_ARTIFACT_ROOT}" && for f in Image*; do
+  cp "$f" "rv32_$f"
+done
 ############################################### DONE ######################################################
 
 # For debugging and checking that the build was as minimal as possible: 

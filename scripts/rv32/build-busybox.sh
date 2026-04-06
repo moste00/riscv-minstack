@@ -19,3 +19,4 @@ sed -i'' 's/CONFIG_HWCLOCK=y/CONFIG_HWCLOCK=n/' .config
 make ARCH=riscv CROSS_COMPILE="${MSTK_TOOLCHAIN_PREFIX}" -j$(nproc)
 
 echo "BUSYBOX_ARTIFACT_ROOT=$(pwd)" >> ${GITHUB_ENV:-/dev/null}
+cp busybox rv32-busybox

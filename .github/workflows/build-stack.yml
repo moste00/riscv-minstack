@@ -35,7 +35,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: linux
-          path: ${{ env.LINUX_ARTIFACT_ROOT }}/Image*
+          path: ${{ env.LINUX_ARTIFACT_ROOT }}/rv32-Image*
 
   build-opensbi:
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: opensbi
-          path: ${{ env.OPENSBI_ARTIFACT_ROOT }}/fw*
+          path: ${{ env.OPENSBI_ARTIFACT_ROOT }}/rv32-fw*
 
   build-busybox:
     runs-on: ubuntu-latest
@@ -88,7 +88,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: busybox
-          path: ${{ env.BUSYBOX_ARTIFACT_ROOT }}/busybox
+          path: ${{ env.BUSYBOX_ARTIFACT_ROOT }}/rv32-busybox
 
   # 2- Reduce, i.e. publish the final artifacts to Releases after everything is done
   publish-artifacts:
