@@ -12,7 +12,9 @@ jobs:
       - name: Load environment
         run: |
           echo "MSTK_GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
-          source .versions && source .env && env | grep "^MSTK_" >> $GITHUB_ENV
+          source .versions && source .env 
+          env
+          env | grep "^MSTK_" >> $GITHUB_ENV
           
       - name: Install Linux build depedencies 
         run: |
@@ -41,7 +43,9 @@ jobs:
       - name: Load environment
         run: |
           echo "MSTK_GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
-          source .versions && source .env && env | grep "^MSTK_" >> $GITHUB_ENV
+          source .versions && source .env
+          env
+          env | grep "^MSTK_" >> $GITHUB_ENV
 
       - uses: ./.github/actions/bootlin
         with: 
@@ -64,7 +68,9 @@ jobs:
       - name: Load environment
         run: |
           echo "MSTK_GH_ROOT=${{ github.workspace }}" >> $GITHUB_ENV
-          source .versions && source .env && env | grep "^MSTK_" >> $GITHUB_ENV
+          source .versions && source .env
+          env
+          env | grep "^MSTK_" >> $GITHUB_ENV
       - uses: ./.github/actions/bootlin
         with: 
           bootlin-url: ${{ env.MSTK_BOOTLIN_DOWNLOAD_URL }}
